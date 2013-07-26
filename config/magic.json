@@ -1,0 +1,46 @@
+[
+    {
+	"options": {
+	    "from": "-12h",
+	    "title": "System CPU",
+	    "fontName": "DroidSans",
+	    "fontSize": "10",
+	    "lineMode": "connected",
+	    "thickness": "1",
+	    "bgcolor": "#FFFFFF",
+	    "fgcolor": "#333333",
+	    "majorGridLineColor": "#ADADAD",
+	    "minorGridLineColor": "#E5E5E5",
+	    "yMin": "0"
+	},
+	"targets": [
+	    [
+		"{env}.us-east-1.{service}-server.*.cpu-*.cpu-system",
+		{}
+	    ]
+	]
+    },
+    {
+	"options": {
+	    "from": "-1d",
+	    "title": "Requests Rate",
+	    "fontName": "DroidSans",
+	    "fontSize": "10",
+	    "lineMode": "connected",
+	    "thickness": "1",
+	    "bgcolor": "#FFFFFF",
+	    "fgcolor": "#333333",
+	    "majorGridLineColor": "#ADADAD",
+	    "minorGridLineColor": "#E5E5E5",
+	    "yMin": "0",
+	    "drawNullAsZero": "on"
+	},
+	"targets": [
+	    [
+		"{env}.us-east-1.{service}-server.*.tcc_statz-{service}.gauge-requests-rate",
+		{}
+	    ]
+	]
+    }
+
+]

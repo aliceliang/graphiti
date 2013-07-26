@@ -30,6 +30,7 @@ class Metric
     response = Typhoeus::Request.get(url)
     if response.success?
       json = Yajl::Parser.parse(response.body)
+      json.map! { |e| e = e[1..-1] }
       if prefix.nil?
         @metrics = json 
       elsif prefix.kind_of?(Array)

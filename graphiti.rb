@@ -21,6 +21,8 @@ require './lib/s3/signature'
 require './lib/metric'
 require './lib/graph'
 require './lib/dashboard'
+require './lib/magic'
+
 
 class Graphiti < Sinatra::Base
 
@@ -29,6 +31,7 @@ class Graphiti < Sinatra::Base
   register Sinatra::Contrib
 
   config_file 'config/settings.yml'
+  
 
   configure do
     set :logging, true
@@ -43,6 +46,8 @@ class Graphiti < Sinatra::Base
     Graph.redis = settings.redis_url
     Dashboard.redis = settings.redis_url
     Metric.redis = settings.redis_url
+    Magic.magic = './config/magic.json'
+    Magic.base_url = settings.graphite_base_url
   end
 
   before do

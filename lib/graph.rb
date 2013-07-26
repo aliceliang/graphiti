@@ -16,6 +16,16 @@ class Graph
     uuid
   end
 
+  def self.save_magic(json, title, url)
+    uuid = make_uuid(json)
+    redis.hset "graphs:#{uuid}", "title", title
+    redis.hset "graphs:#{uuid}", "json", json
+    redis.hset "graphs:#{uuid}", "updated_at", Time.now.to_i
+    redis.hset "graphs:#{uuid}", "url", url
+    redis.zadd "graphs", Time.now.to_i, uuid
+    uuid
+  end
+
   def self.find(uuid)
     h = redis.hgetall "graphs:#{uuid}"
     h['uuid']      = uuid
