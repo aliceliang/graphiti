@@ -135,6 +135,7 @@ class Graphiti < Sinatra::Base
     /graphs
     /dashboards/:slug
     /dashboards
+    /magic
     /
   }.each do |path|
     get path do
