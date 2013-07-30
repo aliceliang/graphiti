@@ -104,6 +104,11 @@ class Graphiti < Sinatra::Base
     json :dashboard => dashboard
   end
 
+  post '/magic' do
+    magic = Magic.make_dashboard(params[:environment], params[:service])
+    json :magic => magic
+  end
+
   post '/graphs/dashboards' do
     json Dashboard.add_graph(params[:dashboard], params[:uuid])
   end

@@ -1,6 +1,7 @@
 var app = Sammy('body', function() {
   this.use('Session');
   this.use('NestedParams');
+  this.use('Form');
 
   var canon = require("pilot/canon");
 
@@ -312,6 +313,39 @@ var app = Sammy('body', function() {
           });
     },
 
+    loadMagic: function() {
+      var ctx = this;
+      var $magic = ctx.showPane('magic', '<h2>give me magic</h2>');
+      var magic = {
+        environment: 'environment',
+        service: 'service name, e.g. martyjr'
+      }
+
+      var form = new Sammy.FormBuilder('magic', magic);
+      var env = form.text('environment');
+      var service = form.text('service');
+      var submit = form.submit();
+
+      $($magic).append(env)
+               .append(service)
+               .append(submit);
+
+      var $submit = $('#magic-pane input[type="submit"]');
+      $submit.click(function () {
+         var env = $('#magic-pane input[class="magic-environment"]').val();
+         var service = $('#magic-pane input[class="magic-service"]').val();
+         $.ajax({
+           type: "POST",
+           url: "/magic",
+           data: {environment: env, service: service},
+           success: function(data) {
+             window.location.href = "/dashboards/" + env + " " + service
+           },
+           dataType: "json"
+         });
+      });
+    },
+
     loadAndRenderSnapshots: function() {
       var ctx = this;
       this.load('/graphs/' + this.params.uuid + '.js', {cache: false})
@@ -478,6 +512,10 @@ var app = Sammy('body', function() {
     this.loadAndRenderDashboards();
   });
 
+  this.get('/magic', function(ctx) {
+    this.loadMagic();
+  });
+
   this.post('/graphs', function(ctx) {
     ctx.showSaving();
     var graph = new Graphiti.Graph(this.getEditorJSON());
@@ -575,8 +613,4 @@ var app = Sammy('body', function() {
     });
   });
 
-});
-
-$(function() {
-  app.run();
 });

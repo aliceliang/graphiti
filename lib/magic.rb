@@ -48,6 +48,7 @@ class Magic
     dash_json = Dashboard.save(dash)
     graph_uuids = make_graphs(env, service)
     graph_uuids.map { |u| Dashboard.add_graph(dash_json[:slug], u)}
+    dash_json
   end
 
 end
