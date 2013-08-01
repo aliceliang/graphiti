@@ -80,7 +80,7 @@ class Graphiti < Sinatra::Base
     if params[:env]
       json :services => Metric.get_services(params[:env])
     else
-      json :envs => Metric.get_envs
+      json :environments => Metric.get_envs
     end
   end
 

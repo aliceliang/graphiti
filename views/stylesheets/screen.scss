@@ -346,6 +346,10 @@ h2 {
   }
 }
 
+#magic-pane .selected, #magic-pane .environment, #magic-pane .submit {
+  float: left;
+}
+
 #container ul.actions {
   @include horizontal-list(8px, right);
   border-top: 1px solid #CCC;
