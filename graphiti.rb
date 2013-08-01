@@ -31,7 +31,7 @@ class Graphiti < Sinatra::Base
   register Sinatra::Contrib
 
   config_file 'config/settings.yml'
-  
+
 
   configure do
     set :logging, true
@@ -74,6 +74,14 @@ class Graphiti < Sinatra::Base
 
   get '/dashboards/:slug.js' do
     json Dashboard.find(params[:slug], true)
+  end
+
+  get '/magic.js' do
+    if params[:env]
+      json :services => Metric.get_services(params[:env])
+    else
+      json :envs => Metric.get_envs
+    end
   end
 
   get '/dashboards.js' do

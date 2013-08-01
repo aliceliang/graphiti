@@ -25,7 +25,9 @@ namespace :graphiti do
   desc 'Rebuild Metrics List'
   task :metrics do
     list = Metric.all true
+    Metric.into_magic
     puts "Got #{list.length} metrics"
+    puts "Updated magic"
   end
 
   desc 'Send email reports per dashboard. Needs `reports` settings in settings.yml'

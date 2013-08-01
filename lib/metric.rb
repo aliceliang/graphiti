@@ -23,6 +23,29 @@ class Metric
     matches
   end
 
+  def self.into_magic
+    magic = Hash.new([])
+    all.each do |e|
+      e = e.split(".")
+      env = e[0]
+      service = e[2].gsub("-server", "")
+      magic[env] = magic[env].concat([service]) if e[2]["-server"]
+    end
+    magic.each do |k, v|
+      v.uniq!
+      redis.hset "magic", k, v.join("\n")
+    end
+  end
+
+  def self.get_envs
+    redis.hkeys "magic"
+  end
+
+  def self.get_services(env)
+    services = redis.hget "magic", env
+    services.split("\n")
+  end
+
   private
   def self.get_metrics_list(prefix = Graphiti.settings.metric_prefix)
     url = "#{Graphiti.settings.graphite_base_url}/metrics/index.json"
@@ -32,7 +55,7 @@ class Metric
       json = Yajl::Parser.parse(response.body)
       json.map! { |e| e = e[1..-1] }
       if prefix.nil?
-        @metrics = json 
+        @metrics = json
       elsif prefix.kind_of?(Array)
         @metrics = json.grep(/^[#{prefix.map! { |k| Regexp.escape k }.join("|")}]/)
       else
