@@ -155,6 +155,7 @@ class Graphiti < Sinatra::Base
     /dashboards/:slug
     /dashboards
     /magic
+    /more-magic
     /
   }.each do |path|
     get path do
