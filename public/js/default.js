@@ -13327,7 +13327,7 @@ var app = Sammy('body', function() {
           url: "/magic",
           data: {environment: env, service: service},
           success: function(data) {
-            window.location.href = "/dashboards/" + env + " " + service
+            window.location.href = "/dashboards/" + data.magic.slug;
           },
           dataType: "json"
         });
