@@ -13320,17 +13320,17 @@ var app = Sammy('body', function() {
 
       var $submit = $('#magic-pane input[type="submit"]');
       $submit.click(function () {
-         var env = document.getElementById("environment").value;
-         var service = $('#magic-pane input[class="magic-service"]').val();
-         $.ajax({
-           type: "POST",
-           url: "/magic",
-           data: {environment: env, service: service},
-           success: function(data) {
-             window.location.href = "/dashboards/" + env + " " + service
-           },
-           dataType: "json"
-         });
+        var env = $('select.magic-environment').val();
+        var service = $('select.magic-service').val();
+        $.ajax({
+          type: "POST",
+          url: "/magic",
+          data: {environment: env, service: service},
+          success: function(data) {
+            window.location.href = "/dashboards/" + env + " " + service
+          },
+          dataType: "json"
+        });
       });
     },
 
