@@ -13267,7 +13267,7 @@ var app = Sammy('body', function() {
           });
     },
 
-    getServicesAvailable: function(ctx) {
+    getServicesDropdown: function(ctx) {
       var env = $('select.magic-environment').val();
       if (env) {
         var $selected = $('#magic-pane .selected');
@@ -13280,11 +13280,9 @@ var app = Sammy('body', function() {
            });
       }
     },
-
     loadMagic: function() {
       var ctx = this;
       var $magic = ctx.showPane('magic', '<h2>give me magic</h2>');
-      ctx.m = $magic;
       var magic = {
         environment: 'environment',
         service: 'service name'
@@ -13293,10 +13291,6 @@ var app = Sammy('body', function() {
       var selected = $('#templates .magic .selected');
       var env_div = $('#templates .magic .environment');
       var submit_div = $('#templates .magic .submit');
-
-      // var $selected = $('#magic-pane .selected');
-      // var select = ctx.form.select('service', ['']);
-      // $selected.html(select);
 
       $($magic).append(env_div)
                .append(selected)
@@ -13307,11 +13301,10 @@ var app = Sammy('body', function() {
       this.load('/magic.js', {cache: false})
           .then(function(data) {
             envs = [''].concat(data.environments);
-            console.log(envs);
             var env = form.select('environment', envs);
             env_div.append(env);
             var $env = $('select.magic-environment');
-            $env.change(function() {ctx.getServicesAvailable(ctx);});
+            $env.change(function() {ctx.getServicesDropdown(ctx);});
           });
 
 
@@ -13326,6 +13319,77 @@ var app = Sammy('body', function() {
           type: "POST",
           url: "/magic",
           data: {environment: env, service: service},
+          success: function(data) {
+            window.location.href = "/dashboards/" + data.magic.slug;
+          },
+          dataType: "json"
+        });
+      });
+    },
+
+    getServicesCheckbox: function(ctx) {
+      var env = $('select.more-magic-environment').val();
+      if (env) {
+        var $selected = $('#more-magic-pane .selected');
+
+        ctx.load('/magic.js', {cache: false, data: {env: env}})
+           .then(function(data) {
+             var select = $.map(data.services, function (val, i) {
+               box = ctx.form.checkbox('service', val, {name: val})
+               return box + val;
+               });
+             $selected.html(select.join(""));
+           });
+      }
+    },
+    getCheckedServices: function() {
+      var checked = $('#more-magic-pane .selected :checked');
+      return $.map(checked, function(e) {return e.value})
+    },
+    loadMoreMagic: function() {
+      var ctx = this;
+      var $mm = ctx.showPane('more-magic', '<h2>give me more magic</h2>');
+      var more_magic = {
+        environment: 'environment',
+        services: 'selected services',
+        title: 'dashboard title'
+      }
+
+      var selected = $('#templates .more-magic .selected');
+      var env_div = $('#templates .more-magic .environment');
+      var title_div = $('#templates .more-magic .title');
+      var submit_div = $('#templates .more-magic .submit');
+
+      $($mm).append(title_div)
+            .append(env_div)
+            .append(selected)
+            .append(submit_div);
+
+      var form = new Sammy.FormBuilder('more-magic', more_magic);
+      ctx.form = form;
+      this.load('/magic.js', {cache: false})
+          .then(function(data) {
+            envs = [''].concat(data.environments);
+            var env = form.select('environment', envs);
+            env_div.append(env);
+            var $env = $('select.more-magic-environment');
+            $env.change(function() {ctx.getServicesCheckbox(ctx);});
+          });
+
+      var title = form.text('title');
+      title_div.append(title);
+      var submit = form.submit();
+      submit_div.append(submit);
+
+      var $submit = $('#more-magic-pane input[type="submit"]');
+      $submit.click(function () {
+        var env = $('select.more-magic-environment').val();
+        var services = ctx.getCheckedServices().join(",");
+        var title = $('input.more-magic-title').val();
+        $.ajax({
+          type: "POST",
+          url: "/magic",
+          data: {environment: env, services: services, title: title},
           success: function(data) {
             window.location.href = "/dashboards/" + data.magic.slug;
           },
@@ -13450,6 +13514,10 @@ var app = Sammy('body', function() {
 
   this.get('/magic', function(ctx) {
     this.loadMagic();
+  });
+
+  this.get('/more-magic', function(ctx) {
+    this.loadMoreMagic();
   });
 
   this.get('/dashboards/:slug', function(ctx) {

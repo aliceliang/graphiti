@@ -20,6 +20,9 @@
           %a{href: '/magic'}
             Magic
         %li
+          %a{href: '/more-magic'}
+            More Magic
+        %li
           %a{href: '/dashboards'}
             Dashboards
         %li
@@ -36,6 +39,7 @@
     #loading-pane.pane
       %h2 ... Loading ...
     #magic-pane.pane{style: 'display:none;'}
+    #more-magic-pane.pane{style: 'display:none;'}
     #dashboards-pane.pane{style: 'display:none;'}
     #graphs-pane.pane{style: 'display:none;'}
     #snapshots-pane.pane{style: 'display:none;'}
@@ -199,6 +203,11 @@
     Graphiti #{Graphiti::VERSION}
 
   #templates{style: 'display:none'}
+    .more-magic{style: 'display:none'}
+      .environment
+      .selected
+      .title
+      .submit
     .magic{style: 'display:none'}
       .environment
       .selected

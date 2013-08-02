@@ -34,15 +34,6 @@ class Magic
     jsons
   end
 
-  def self.make_single_dash(env=nil, service)
-    env ||= "*"
-    dash = {title: "#{service} (#{env})", slug: "#{env} #{service}"}
-    dash_json = Dashboard.save(dash)
-    graph_uuids = make_graphs(env, service)
-    graph_uuids.map { |u| Dashboard.add_graph(dash_json[:slug], u)}
-    dash_json
-  end
-
   def self.make_stack(env=nil, services, title)
     env ||= "*"
     dash = {title: "#{title} (#{env})", slug: "#{env} #{title}"}
@@ -51,6 +42,10 @@ class Magic
     graph_uuids.flatten!
     graph_uuids.map { |u| Dashboard.add_graph(dash_json[:slug], u)}
     dash_json
+  end
+
+  def self.make_single_dash(env=nil, service)
+    make_stack(env, [service], service)
   end
 
   private
