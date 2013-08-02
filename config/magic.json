@@ -2,7 +2,7 @@
     {
 	"options": {
 	    "from": "-12h",
-	    "title": "System CPU",
+	    "title": "System CPU ({service})",
 	    "fontName": "DroidSans",
 	    "fontSize": "10",
 	    "lineMode": "connected",
@@ -23,7 +23,7 @@
     {
 	"options": {
 	    "from": "-1d",
-	    "title": "Requests Rate",
+	    "title": "Requests Rate ({service})",
 	    "fontName": "DroidSans",
 	    "fontSize": "10",
 	    "lineMode": "connected",

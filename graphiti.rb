@@ -113,8 +113,14 @@ class Graphiti < Sinatra::Base
   end
 
   post '/magic' do
-    magic = Magic.make_dashboard(params[:environment], params[:service])
-    json :magic => magic
+    if params[:service]
+      magic = Magic.make_single_dash(params[:environment], params[:service])
+      json :magic => magic
+    else
+      services = params[:services].split(",")
+      magic = Magic.make_stack(params[:environment], services, params[:title])
+      json :magic => magic
+    end
   end
 
   post '/graphs/dashboards' do

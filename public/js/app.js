@@ -313,36 +313,70 @@ var app = Sammy('body', function() {
           });
     },
 
+    getServicesAvailable: function(ctx) {
+      var env = $('select.magic-environment').val();
+      if (env) {
+        var $selected = $('#magic-pane .selected');
+
+        ctx.load('/magic.js', {cache: false, data: {env: env}})
+           .then(function(data) {
+             console.log(env);
+             var select = ctx.form.select('service', data.services);
+             $selected.html(select);
+           });
+      }
+    },
+
     loadMagic: function() {
       var ctx = this;
       var $magic = ctx.showPane('magic', '<h2>give me magic</h2>');
+      ctx.m = $magic;
       var magic = {
         environment: 'environment',
-        service: 'service name, e.g. martyjr'
+        service: 'service name'
       }
 
-      var form = new Sammy.FormBuilder('magic', magic);
-      var env = form.text('environment');
-      var service = form.text('service');
-      var submit = form.submit();
+      var selected = $('#templates .magic .selected');
+      var env_div = $('#templates .magic .environment');
+      var submit_div = $('#templates .magic .submit');
 
-      $($magic).append(env)
-               .append(service)
-               .append(submit);
+      // var $selected = $('#magic-pane .selected');
+      // var select = ctx.form.select('service', ['']);
+      // $selected.html(select);
+
+      $($magic).append(env_div)
+               .append(selected)
+               .append(submit_div);
+
+      var form = new Sammy.FormBuilder('magic', magic);
+      ctx.form = form;
+      this.load('/magic.js', {cache: false})
+          .then(function(data) {
+            envs = [''].concat(data.environments);
+            console.log(envs);
+            var env = form.select('environment', envs);
+            env_div.append(env);
+            var $env = $('select.magic-environment');
+            $env.change(function() {ctx.getServicesAvailable(ctx);});
+          });
+
+
+      var submit = form.submit();
+      submit_div.append(submit);
 
       var $submit = $('#magic-pane input[type="submit"]');
       $submit.click(function () {
-         var env = $('#magic-pane input[class="magic-environment"]').val();
-         var service = $('#magic-pane input[class="magic-service"]').val();
-         $.ajax({
-           type: "POST",
-           url: "/magic",
-           data: {environment: env, service: service},
-           success: function(data) {
-             window.location.href = "/dashboards/" + env + " " + service
-           },
-           dataType: "json"
-         });
+        var env = $('select.magic-environment').val();
+        var service = $('select.magic-service').val();
+        $.ajax({
+          type: "POST",
+          url: "/magic",
+          data: {environment: env, service: service},
+          success: function(data) {
+            window.location.href = "/dashboards/" + data.magic.slug;
+          },
+          dataType: "json"
+        });
       });
     },
 
